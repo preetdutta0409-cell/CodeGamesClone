@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Codenames Clone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- ============ SCREEN 1: LOBBY (create / join) ============ -->
+<section id="screen-lobby" class="screen">
+  <div class="lobby-card">
+    <h1 class="brand">CODE<span>NAMES</span></h1>
+    <p class="tagline">A word game of spies, clues, and careful guessing.</p>
+
+    <label class="field">
+      <span>Your name</span>
+      <input id="input-name" type="text" maxlength="20" placeholder="Agent name" />
+    </label>
+
+    <div class="lobby-actions">
+      <button id="btn-create" class="btn btn-primary">Create a room</button>
+
+      <div class="divider"><span>or</span></div>
+
+      <label class="field">
+        <span>Room code</span>
+        <input id="input-code" type="text" maxlength="4" placeholder="ABCD" autocapitalize="characters" />
+      </label>
+      <button id="btn-join" class="btn btn-secondary">Join room</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREEN 2: TEAM SELECT ============ -->
+<section id="screen-teams" class="screen hidden">
+  <div class="teams-wrap">
+    <header class="teams-header">
+      <div>
+        <h2>Room <span id="room-code-display" class="room-code"></span></h2>
+        <p class="hint">Share this code with your friends so they can join.</p>
+      </div>
+      <button id="btn-copy-code" class="btn btn-ghost">Copy code</button>
+    </header>
+
+    <div class="team-columns">
+      <div class="team-col team-col-red">
+        <h3>Red Team</h3>
+        <div class="role-row">
+          <button class="btn btn-team btn-red" data-team="red" data-role="spymaster">Spymaster</button>
+          <button class="btn btn-team btn-red" data-team="red" data-role="operative">Operative</button>
+        </div>
+        <ul id="list-red" class="player-list"></ul>
+      </div>
+
+      <div class="team-col team-col-blue">
+        <h3>Blue Team</h3>
+        <div class="role-row">
+          <button class="btn btn-team btn-blue" data-team="blue" data-role="spymaster">Spymaster</button>
+          <button class="btn btn-team btn-blue" data-team="blue" data-role="operative">Operative</button>
+        </div>
+        <ul id="list-blue" class="player-list"></ul>
+      </div>
+    </div>
+
+    <div class="unassigned-wrap">
+      <h4>Not on a team yet</h4>
+      <ul id="list-unassigned" class="player-list player-list-inline"></ul>
+    </div>
+
+    <button id="btn-start" class="btn btn-primary btn-large">Start game</button>
+    <p class="hint">Each team needs one spymaster and at least one operative.</p>
+  </div>
+</section>
+
+<!-- ============ SCREEN 3: GAME BOARD ============ -->
+<section id="screen-game" class="screen hidden">
+  <header class="game-header">
+    <div class="score-pill score-red">
+      <span class="score-label">RED</span>
+      <span id="score-red" class="score-num">9</span>
+    </div>
+
+    <div id="turn-banner" class="turn-banner">
+      <span id="turn-text">Red's turn</span>
+    </div>
+
+    <div class="score-pill score-blue">
+      <span class="score-label">BLUE</span>
+      <span id="score-blue" class="score-num">8</span>
+    </div>
+  </header>
+
+  <div class="game-body">
+    <aside class="side-panel side-panel-left">
+      <h4>Room <span id="room-code-display-2" class="room-code"></span></h4>
+      <div class="roster">
+        <div class="roster-team">
+          <h5 class="roster-title roster-title-red">Red</h5>
+          <ul id="roster-red" class="player-list"></ul>
+        </div>
+        <div class="roster-team">
+          <h5 class="roster-title roster-title-blue">Blue</h5>
+          <ul id="roster-blue" class="player-list"></ul>
+        </div>
+      </div>
+      <div id="you-info" class="you-info"></div>
+    </aside>
+
+    <main class="board-wrap">
+      <div id="board" class="board"></div>
+
+      <div id="clue-panel" class="clue-panel hidden">
+        <form id="clue-form" autocomplete="off">
+          <input id="clue-word" type="text" maxlength="30" placeholder="Clue word" />
+          <input id="clue-number" type="number" min="0" max="9" placeholder="#" />
+          <button type="submit" class="btn btn-primary">Give clue</button>
+        </form>
+      </div>
+
+      <div id="active-clue" class="active-clue hidden">
+        <span>Clue: <strong id="active-clue-text"></strong></span>
+        <span id="guesses-left" class="guesses-left"></span>
+        <button id="btn-end-turn" class="btn btn-ghost">End turn</button>
+      </div>
+
+      <div id="waiting-panel" class="waiting-panel hidden">
+        <p id="waiting-text">Waiting for the spymaster's clue…</p>
+      </div>
+    </main>
+
+    <aside class="side-panel side-panel-right">
+      <h4>Game log</h4>
+      <div id="log" class="log"></div>
+    </aside>
+  </div>
+
+  <div id="overlay-winner" class="overlay hidden">
+    <div class="overlay-card">
+      <h2 id="winner-text"></h2>
+      <button id="btn-new-game" class="btn btn-primary btn-large">Play again</button>
+    </div>
+  </div>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
+</body>
+</html>
